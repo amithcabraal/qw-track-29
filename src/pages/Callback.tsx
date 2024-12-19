@@ -6,10 +6,16 @@ export const Callback: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Clear the URL hash immediately to prevent token exposure
+    window.history.replaceState({}, document.title, window.location.pathname);
+    
     const token = getAccessTokenFromHash();
     if (token) {
       saveAccessToken(token);
-      navigate('/login-success', { replace: true });
+      // Force a small delay to ensure token is saved before navigation
+      setTimeout(() => {
+        navigate('/login-success', { replace: true });
+      }, 100);
     } else {
       navigate('/login', { replace: true });
     }
